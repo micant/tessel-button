@@ -13,22 +13,34 @@ function Button (hardware, callback) {
   self.delay = 10;
   self.pressed = false;
 
-  // Begin listening for events
-  self.hardware.on('fall', function () {
-    self._press();
-  });
-
-  self.hardware.on('rise', function () {
-    self._release();
+// Begin listening for events
+  self.hardware.on('change', function() {
+    self.hardware.read(function(err, value) {
+      if ( err && (err != 0 && err != 1) ) {
+        console.log(err);
+      }
+      else if ( err == 0 || value == 0 ) {
+        self._press();
+      }
+      else {
+        self._release();
+      }
+    });
   });
 
   // Make sure the events get emitted, even if late
-  setInterval(function () {
-    if(!self.hardware.read()) {
-      self._press();
-    } else {
-      self._release();
-    }
+  setInterval(function () { 
+    self.hardware.read(function(err, value) {
+      if ( err && (err != 0 && err != 1) ) {
+        console.log(err);
+      }
+      else if ( err == 0 || value == 0 ) {
+        self._press();
+      }
+      else {
+        self._release();
+      }
+    });
   }, self.delay);
 
   // Emit the ready event when everything is set up
