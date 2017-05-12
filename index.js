@@ -10,7 +10,7 @@ function Button (hardware, callback) {
   self.hardware = hardware;
 
   // Object properties
-  self.delay = 100;
+  self.delay = 10;
   self.pressed = false;
 
   // Begin listening for events
